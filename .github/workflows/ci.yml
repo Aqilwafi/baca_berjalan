@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - tes-devops
   pull_request:
     branches:
       - main
+      - tes-devops
 
 jobs:
   build:
