@@ -30,6 +30,10 @@ jobs:
         run: npm install
         working-directory: ./frontend
 
+      - name: Install Vitest
+        run: npm install -D vitest
+        working-directory: ./frontend
+
       # Run tests
       - name: Run tests
         run: npm test
