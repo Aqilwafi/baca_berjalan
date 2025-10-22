@@ -108,11 +108,11 @@ template_Copy/
 Cara ini lebih mudah karena semua dependency (Go, PostgreSQL, Node) sudah ada di dalam container.
 Pastikan sudah install Docker & Docker Compose.
 
-**Jalankan perintah:**
+1. **Jalankan satu perintah:**
     ```bash
     docker-compose up --build
     ```
 
-**Akses aplikasi di browser:**
+2. **Akses aplikasi di browser:**
     - Frontend: http://localhost:3000
     - Backend API: http://localhost:8080
