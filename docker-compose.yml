@@ -1,33 +1,54 @@
-services:
-  nextjs:
-    build: .
-    container_name: nextjs_app
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./web:/app
-      - node_modules:/app/node_modules
-    environment:
-      NODE_ENV: development
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/pendaftaran
-      CHOKIDAR_USEPOLLING: "true"
-      WATCHPACK_POLLING: "true"
-    depends_on:
-      - postgres
+version: "3.9"
 
-  postgres:
-    image: postgres:15
-    container_name: postgres_db
-    restart: always
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: baca_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: pendaftaran
-    ports:
-      - "5432:5432"
+      - POSTGRES_USER=baca_user
+      - POSTGRES_PASSWORD=baca_pass
+      - POSTGRES_DB=baca_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - baca_net
+
+  backend:
+    build: ./backend
+    container_name: baca_backend
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=baca_user
+      - DB_PASSWORD=baca_pass
+      - DB_NAME=baca_db
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+    networks:
+      - baca_net
+
+  frontend:
+    build: ./frontend
+    container_name: baca_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - node_modules:/app/node_modules
+    networks:
+      - baca_net
 
 volumes:
   postgres_data:
   node_modules:
+
+networks:
+  baca_net:
